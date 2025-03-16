@@ -35,20 +35,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", indexRouter)
-
-app.get("/", (req,res) => {
-  res.render("home")
-})
-
-app.get("/log-in", (req,res) => {
-  res.render("log-in")
-})
-
-app.post("/log-in" , passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/log-in"
-}))
+app.use("/", indexRouter)
 
 const PORT = process.env.PORT || 3000;
 
