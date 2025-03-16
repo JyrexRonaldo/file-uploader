@@ -7,9 +7,7 @@ const LocalStrategy = require("passport-local").Strategy;
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      //   const user = await db.getUserByUserName(username);
-
-      const user = await prisma.user.findFirst({
+      const user = await prisma.user.findUnique({
         where: {
           username: username,
         },
@@ -19,9 +17,7 @@ passport.use(
         return done(null, false, { message: "Incorrect username" });
       }
 
-      // const match = await bcrypt.compare(password, user.password);
-
-      const match = true
+      const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
         // passwords do not match!
@@ -40,9 +36,8 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    // const user = await db.getUserByUserId(id);
-
-    const user = await prisma.user.findFirst({
+  
+    const user = await prisma.user.findUnique({
       Where: {
         id,
       },
