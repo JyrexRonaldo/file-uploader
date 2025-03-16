@@ -3,18 +3,9 @@ const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
 const passport = require("./config/passport");
-// const LocalStrategy = require("passport-local").Strategy;
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prisma");
-
-
-// const main = async () => {
-//   await prisma.user.create({ data: { password: 'Aa123456', username: 'ron', }, })
-
-// }
-
-// main()
-
+const indexRouter = require("./routes/indexRouter")
 
 const sessionStore = new PrismaSessionStore(prisma, {
   checkPeriod: 24 * 60 * 60 * 1000, // 1 day
@@ -43,6 +34,8 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
+
+app.get("/", indexRouter)
 
 app.get("/", (req,res) => {
   res.render("home")
