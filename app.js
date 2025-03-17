@@ -6,6 +6,7 @@ const passport = require("./config/passport");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prisma");
 const indexRouter = require("./routes/indexRouter")
+const uploadRouter = require("./routes/uploadRouter")
 
 const sessionStore = new PrismaSessionStore(prisma, {
   checkPeriod: 24 * 60 * 60 * 1000, // 1 day
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/storage", uploadRouter)
 app.use("/", indexRouter)
 
 const PORT = process.env.PORT || 3000;
