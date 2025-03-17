@@ -2,7 +2,7 @@ const { Router } = require("express");
 const indexRouter = Router();
 const indexController = require("../controllers/indexController");
 
-indexRouter.route("/").get(indexController.getHomePage);
+// indexRouter.route("/").get(indexController.getHomePage);
 
 indexRouter
   .route("/log-in")
