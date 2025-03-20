@@ -1,0 +1,15 @@
+<%- include('../partials/header'); -%>
+
+<body>
+
+  <h3>New file</h3>
+
+  <form action="/storage/file" enctype="multipart/form-data" method="post">
+      <div class="form-group">
+        <input type="file" class="form-control-file" name="uploaded_file">
+        <button type="submit">Upload</button>
+      </div>
+    </form>
+</body>
+
+</html>
