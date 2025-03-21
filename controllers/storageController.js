@@ -30,20 +30,20 @@ function addFile(req, res) {
   res.redirect("/storage/file");
 }
 
-function addFolder(req, res) {
-  prisma.folder
+async function addFolder(req, res) {
+  const { folderName } = req.body;
+  await prisma.folder.create({ data: { folderName } });
   res.redirect("/storage/folder");
 }
 
-
-
-function getStorageItems(req, res) {
+async function getStorageItems(req, res) {
   res.render("pages/home-page");
 }
 
 module.exports = {
   multerUpload,
   addFile,
+  addFolder,
   getFileForm,
   getFolderForm,
   getStorageItems,

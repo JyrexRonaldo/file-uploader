@@ -2,11 +2,12 @@ const { Router } = require("express");
 const storageRouter = Router();
 const storageController = require("../controllers/storageController");
 
+storageRouter.route("/").get(storageController.getStorageItems);
 
-storageRouter.route("/").get(storageController.getStorageItems)
-
-storageRouter.route("/folder").get(storageController.getFolderForm);
-// .post(storageController.multerUpload, storageController.upladData);
+storageRouter
+  .route("/folder")
+  .get(storageController.getFolderForm)
+  .post(storageController.addFolder);
 
 storageRouter
   .route("/file")
