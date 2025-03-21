@@ -27,15 +27,17 @@ model User {
 }
 
 model Folder {
-  id           Int    @id @default(autoincrement())
-  folderName   String @unique
+  id           Int      @id @default(autoincrement())
+  folderName   String   @unique
   parentFolder String?
+  createdAt    DateTime @default(now())
   files        File[]
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
-  fileName String @unique
-  folder   Folder? @relation(fields: [folderId], references: [id])
-  folderId Int?
+  id        Int      @id @default(autoincrement())
+  fileName  String   @unique
+  createdAt DateTime @default(now())
+  folder    Folder?  @relation(fields: [folderId], references: [id])
+  folderId  Int?
 }
