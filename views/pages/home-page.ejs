@@ -11,7 +11,11 @@
       <form action="/storage/file"><button>Upload file</button></form>
     </div>
     <div>
-      <p>Storage</p>
+      <% if (currentFolderName) {%>
+      <p><%= currentFolderName %></p>
+      <% } else { %>
+        <p>Storage</p>
+      <% }  %>
     </div>
     <div>
 

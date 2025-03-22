@@ -1,5 +1,7 @@
 <div>
   <img src='img/directory.svg' alt="">
-  <p><%= item.folderName %></p>
+  <a href="/storage?folderId=<%= item.id %>&folderName=<%= item.folderName %>">
+    <%= item.folderName %>
+  </a>
   <button>...</button>
 </div>

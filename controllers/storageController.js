@@ -44,8 +44,8 @@ async function addFolder(req, res) {
 }
 
 async function getItems(currentFolderId) {
-  const files = null;
-  const folders = null;
+  let files = null;
+  let folders = null;
 
   if (currentFolderId) {
     files = await prisma.file.findMany({
@@ -74,8 +74,12 @@ async function getItems(currentFolderId) {
 }
 
 async function getStorageItems(req, res) {
-  const items = await getItems();
-  res.render("pages/home-page", { items });
+  const { folderId } = req.query;
+  const currentFolderName = req.query.folderName || null
+  console.log(req.query)
+  const items = await getItems(+folderId);
+  console.log(items)
+  res.render("pages/home-page", { items, currentFolderName });
 }
 
 function downloadItem(req, res) {
