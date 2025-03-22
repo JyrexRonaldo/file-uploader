@@ -1,10 +1,31 @@
 <%- include('../partials/header'); -%>
 
 <body>
-  <p>Hello rex</p>
-  <form action="/storage/download" method="get">
-    <button>download</button>
-  </form>
+  <header>
+    <p>File uploader</p>
+    <a href="">Log out</a>
+  </header>
+  <main>
+    <div>
+      <form action="/storage/folder"><button>Add folder</button></form>
+      <form action="/storage/file"><button>Upload file</button></form>
+    </div>
+    <div>
+      <p>Storage</p>
+    </div>
+    <div>
+
+      <% items.forEach((item) => { %>
+      <% if (item.type === "FOLDER")  {%>
+      <%- include('../partials/folder-record', { item: item }); %>
+      <% } else { %>
+      <%- include('../partials/file-record', { item: item }); %>
+      <% }  %>
+      <% }); %>
+
+    </div>
+  </main>
+
 </body>
 
 </html>

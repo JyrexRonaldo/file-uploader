@@ -29,6 +29,7 @@ app.use(
 );
 
 const assetsPath = path.join(__dirname, "public");
+app.use(express.static(assetsPath));
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {

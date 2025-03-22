@@ -34,18 +34,25 @@ async function addFile(req, res) {
       },
     });
   }
-
-  res.redirect("/storage/file");
+  res.redirect("/storage");
 }
 
 async function addFolder(req, res) {
   const { folderName } = req.body;
   await prisma.folder.create({ data: { folderName } });
-  res.redirect("/storage/folder");
+  res.redirect("/storage");
+}
+
+async function getItems() {
+  const files = await prisma.file.findMany()
+  const folders = await prisma.folder.findMany()
+  const items = files.concat(folders).sort((a,b) => (a.createdAt > b.createdAt)? 1 : -1)
+  return items
 }
 
 async function getStorageItems(req, res) {
-  res.render("pages/home-page");
+  const items = await getItems()
+  res.render("pages/home-page", { items });
 }
 
 function downloadItem(req, res) {
