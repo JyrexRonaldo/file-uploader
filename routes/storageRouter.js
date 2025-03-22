@@ -4,6 +4,8 @@ const storageController = require("../controllers/storageController");
 
 storageRouter.route("/").get(storageController.getStorageItems);
 
+storageRouter.route("/download").get(storageController.downloadItem);
+
 storageRouter
   .route("/folder")
   .get(storageController.getFolderForm)

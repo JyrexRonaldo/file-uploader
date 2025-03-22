@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.originalname + "-" + uniqueSuffix);
+    cb(null, uniqueSuffix);
   },
 });
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const multerUpload = upload.single("uploaded_file");
+const multerUpload = upload.single("uploadedFile");
 
 function getFileForm(req, res) {
   res.render("forms/upload-file-form");
@@ -25,8 +25,16 @@ function getFolderForm(req, res) {
   res.render("forms/upload-folder-form");
 }
 
-function addFile(req, res) {
-  console.log(req.file, req.body);
+async function addFile(req, res) {
+  if (req.file) {
+    await prisma.file.create({
+      data: {
+        fileName: req.file.filename,
+        originalName: req.file.originalname,
+      },
+    });
+  }
+
   res.redirect("/storage/file");
 }
 
@@ -40,6 +48,10 @@ async function getStorageItems(req, res) {
   res.render("pages/home-page");
 }
 
+function downloadItem(req, res) {
+  res.download("./uploads/1742632033957-936147402", "merc.jpg");
+}
+
 module.exports = {
   multerUpload,
   addFile,
@@ -47,4 +59,5 @@ module.exports = {
   getFileForm,
   getFolderForm,
   getStorageItems,
+  downloadItem,
 };
