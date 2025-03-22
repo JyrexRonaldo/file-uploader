@@ -37,6 +37,7 @@ model Folder {
 model File {
   id        Int      @id @default(autoincrement())
   fileName  String   @unique
+  originalName String
   createdAt DateTime @default(now())
   folder    Folder?  @relation(fields: [folderId], references: [id])
   folderId  Int?
