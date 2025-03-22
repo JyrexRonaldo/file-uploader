@@ -43,15 +43,38 @@ async function addFolder(req, res) {
   res.redirect("/storage");
 }
 
-async function getItems() {
-  const files = await prisma.file.findMany()
-  const folders = await prisma.folder.findMany()
-  const items = files.concat(folders).sort((a,b) => (a.createdAt > b.createdAt)? 1 : -1)
-  return items
+async function getItems(currentFolderId) {
+  const files = null;
+  const folders = null;
+
+  if (currentFolderId) {
+    files = await prisma.file.findMany({
+      where: {
+        folderId: {
+          equals: currentFolderId,
+        },
+      },
+    });
+
+    folders = await prisma.folder.findMany({
+      where: {
+        parentFolderId: {
+          equals: currentFolderId,
+        },
+      },
+    });
+  } else {
+    files = await prisma.file.findMany();
+    folders = await prisma.folder.findMany();
+  }
+  const items = files
+    .concat(folders)
+    .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
+  return items;
 }
 
 async function getStorageItems(req, res) {
-  const items = await getItems()
+  const items = await getItems();
   res.render("pages/home-page", { items });
 }
 
