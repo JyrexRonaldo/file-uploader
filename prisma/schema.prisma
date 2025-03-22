@@ -27,18 +27,25 @@ model User {
 }
 
 model Folder {
-  id           Int      @id @default(autoincrement())
-  folderName   String   @unique
+  id             Int      @id @default(autoincrement())
+  folderName     String   @unique
   parentFolderId Int?
-  createdAt    DateTime @default(now())
-  files        File[]
+  createdAt      DateTime @default(now())
+  type           Type     @default(FOLDER)
+  files          File[]
 }
 
 model File {
-  id        Int      @id @default(autoincrement())
-  fileName  String   @unique
+  id           Int      @id @default(autoincrement())
+  fileName     String   @unique
   originalName String
-  createdAt DateTime @default(now())
-  folder    Folder?  @relation(fields: [folderId], references: [id])
-  folderId  Int?
+  createdAt    DateTime @default(now())
+  type           Type     @default(FILE)
+  folder       Folder?  @relation(fields: [folderId], references: [id])
+  folderId     Int?
+}
+
+enum Type {
+  FOLDER
+  FILE
 }
