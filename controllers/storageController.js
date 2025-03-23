@@ -69,11 +69,13 @@ async function getItems(currentFolderId, userId) {
   } else {
     files = await prisma.file.findMany({
       where: {
+        folderId: null,
         userId,
       },
     });
     folders = await prisma.folder.findMany({
       where: {
+        parentFolderId: 0,
         userId,
       },
     });
