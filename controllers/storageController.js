@@ -35,6 +35,7 @@ async function addFile(req, res) {
         fileName: req.file.filename,
         originalName: req.file.originalname,
         folderId: +folderId || null,
+        userId: req.user.id,
       },
     });
   }
@@ -44,28 +45,38 @@ async function addFile(req, res) {
 async function addFolder(req, res) {
   const { folderName, parentFolderId } = req.body;
   await prisma.folder.create({
-    data: { folderName, parentFolderId: +parentFolderId },
+    data: { folderName, parentFolderId: +parentFolderId, userId: req.user.id },
   });
   res.redirect("/storage");
 }
 
-async function getItems(currentFolderId) {
+async function getItems(currentFolderId, userId) {
   let files = null;
   let folders = null;
   if (currentFolderId) {
     files = await prisma.file.findMany({
       where: {
         folderId: currentFolderId,
+        userId,
       },
     });
     folders = await prisma.folder.findMany({
       where: {
         parentFolderId: currentFolderId,
+        userId,
       },
     });
   } else {
-    files = await prisma.file.findMany();
-    folders = await prisma.folder.findMany();
+    files = await prisma.file.findMany({
+      where: {
+        userId,
+      },
+    });
+    folders = await prisma.folder.findMany({
+      where: {
+        userId,
+      },
+    });
   }
   const items = files
     .concat(folders)
@@ -76,7 +87,7 @@ async function getItems(currentFolderId) {
 async function getStorageItems(req, res) {
   const folderId = req.query.folderId || null;
   const currentFolderName = req.query.folderName || null;
-  const items = await getItems(+folderId);
+  const items = await getItems(+folderId, req.user.id);
   res.render("pages/home-page", { items, currentFolderName, folderId });
 }
 
