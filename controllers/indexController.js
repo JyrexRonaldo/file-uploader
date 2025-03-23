@@ -6,7 +6,7 @@ function getLogInPage(req, res) {
   res.render("forms/log-in-form");
 }
 
- function getSignUpPage(req, res) {
+function getSignUpPage(req, res) {
   res.render("forms/sign-up-form");
 }
 
@@ -46,5 +46,5 @@ module.exports = {
   getSignUpPage,
   getHomePage,
   authenticateUser,
-  logOutUser
+  logOutUser,
 };

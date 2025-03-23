@@ -7,8 +7,8 @@
   </header>
   <main>
     <div>
-      <form action="/storage/folder"><button>Add folder</button></form>
-      <form action="/storage/file"><button>Upload file</button></form>
+      <a href="/storage/folder?folderId=<%= folderId %>"><button type="button">Add folder</button></a>
+      <a href="/storage/file?folderId=<%= folderId %>"><button>Upload file</button></a>
     </div>
     <div>
       <% if (currentFolderName) {%>

@@ -5,6 +5,7 @@
   <form action="/storage/folder" method="post">
     <div class="form-group">
       <input type="text" name="folderName">
+      <input type="hidden" name="parentFolderId" value="<%= folderId %>">
       <button type="submit">Create Folder</button>
     </div>
   </form>

@@ -18,19 +18,23 @@ const upload = multer({ storage });
 const multerUpload = upload.single("uploadedFile");
 
 function getFileForm(req, res) {
-  res.render("forms/upload-file-form");
+  const { folderId } = req.query;
+  res.render("forms/upload-file-form", { folderId });
 }
 
 function getFolderForm(req, res) {
-  res.render("forms/upload-folder-form");
+  const { folderId } = req.query;
+  res.render("forms/upload-folder-form", { folderId });
 }
 
 async function addFile(req, res) {
+  const { folderId } = req.body;
   if (req.file) {
     await prisma.file.create({
       data: {
         fileName: req.file.filename,
         originalName: req.file.originalname,
+        folderId: +folderId || null,
       },
     });
   }
@@ -38,22 +42,22 @@ async function addFile(req, res) {
 }
 
 async function addFolder(req, res) {
-  const { folderName } = req.body;
-  await prisma.folder.create({ data: { folderName } });
+  const { folderName, parentFolderId } = req.body;
+  await prisma.folder.create({
+    data: { folderName, parentFolderId: +parentFolderId },
+  });
   res.redirect("/storage");
 }
 
 async function getItems(currentFolderId) {
   let files = null;
   let folders = null;
-
   if (currentFolderId) {
     files = await prisma.file.findMany({
       where: {
         folderId: currentFolderId,
       },
     });
-
     folders = await prisma.folder.findMany({
       where: {
         parentFolderId: currentFolderId,
@@ -70,12 +74,10 @@ async function getItems(currentFolderId) {
 }
 
 async function getStorageItems(req, res) {
-  const { folderId } = req.query;
-  const currentFolderName = req.query.folderName || null
-  console.log(req.query)
+  const folderId = req.query.folderId || null;
+  const currentFolderName = req.query.folderName || null;
   const items = await getItems(+folderId);
-  console.log(items)
-  res.render("pages/home-page", { items, currentFolderName });
+  res.render("pages/home-page", { items, currentFolderName, folderId });
 }
 
 function downloadItem(req, res) {

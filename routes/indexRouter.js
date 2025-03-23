@@ -14,6 +14,6 @@ indexRouter
   .get(indexController.getSignUpPage)
   .post(indexController.addNewUser, indexController.authenticateUser);
 
-indexRouter.get("/log-out", indexController.logOutUser)
+indexRouter.get("/log-out", indexController.logOutUser);
 
 module.exports = indexRouter;
