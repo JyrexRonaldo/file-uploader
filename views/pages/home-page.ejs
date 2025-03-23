@@ -1,14 +1,8 @@
-<%- include('../partials/header'); -%>
-
-<body>
-  <header>
-    <p>File uploader</p>
-    <a href="/log-out">Log out</a>
-  </header>
+<%- include('../partials/header'); %>
   <main>
     <div>
       <a href="/storage/folder?folderId=<%= folderId %>"><button type="button">Add folder</button></a>
-      <a href="/storage/file?folderId=<%= folderId %>"><button>Upload file</button></a>
+      <a href="/storage/file?folderId=<%= folderId %>"><button type="button">Upload file</button></a>
     </div>
     <div>
       <% if (currentFolderName) {%>

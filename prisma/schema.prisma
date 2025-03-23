@@ -21,9 +21,11 @@ model Session {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       Int      @id @default(autoincrement())
+  username String   @unique
   password String
+  Folder   Folder[]
+  File     File[]
 }
 
 model Folder {
@@ -33,6 +35,8 @@ model Folder {
   createdAt      DateTime @default(now())
   type           Type     @default(FOLDER)
   files          File[]
+  user           User     @relation(fields: [userId], references: [id])
+  userId         Int
 }
 
 model File {
@@ -40,9 +44,11 @@ model File {
   fileName     String   @unique
   originalName String
   createdAt    DateTime @default(now())
-  type           Type     @default(FILE)
+  type         Type     @default(FILE)
   folder       Folder?  @relation(fields: [folderId], references: [id])
   folderId     Int?
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
 }
 
 enum Type {
