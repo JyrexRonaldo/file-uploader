@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const storageRouter = Router();
 const storageController = require("../controllers/storageController");
+const authController = require("../controllers/authController")
 
-storageRouter.route("/").get(storageController.getStorageItems);
+storageRouter.route("/").get(authController.isAuth ,storageController.getStorageItems);
 
 storageRouter.route("/download").get(storageController.downloadItem);
 
