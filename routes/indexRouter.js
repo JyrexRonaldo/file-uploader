@@ -7,11 +7,13 @@ const indexController = require("../controllers/indexController");
 indexRouter
   .route("/log-in")
   .get(indexController.getLogInPage)
-  .post(indexController.authenticateuser);
+  .post(indexController.authenticateUser);
 
 indexRouter
   .route("/sign-up")
   .get(indexController.getSignUpPage)
-  .post(indexController.addNewUser, indexController.authenticateuser);
+  .post(indexController.addNewUser, indexController.authenticateUser);
+
+indexRouter.get("/log-out", indexController.logOutUser)
 
 module.exports = indexRouter;

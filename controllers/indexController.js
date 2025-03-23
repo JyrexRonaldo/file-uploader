@@ -26,15 +26,25 @@ async function getHomePage(req, res) {
   res.render("pages/home-page");
 }
 
-const authenticateuser = passport.authenticate("local", {
-  successRedirect: "/",
+const authenticateUser = passport.authenticate("local", {
+  successRedirect: "/storage",
   failureRedirect: "/log-in",
 });
+
+function logOutUser(req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/log-in");
+  });
+}
 
 module.exports = {
   addNewUser,
   getLogInPage,
   getSignUpPage,
   getHomePage,
-  authenticateuser,
+  authenticateUser,
+  logOutUser
 };
