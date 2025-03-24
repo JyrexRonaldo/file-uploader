@@ -48,15 +48,20 @@ main > div:nth-child(3) > div {
   padding: 15px;
 }
 
+main > div:nth-child(3) > div > a:nth-child(2),
+main > div:nth-child(3) > div > p:nth-child(2) {
+  align-self: center;
+}
+
 main > div:nth-child(3) > div > a:last-child {
- margin-left: auto;
- font-size: 20px;
- font-weight: 900;
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 900;
 }
 
 main img {
-    height: auto;
-    width: 35px;
+  height: auto;
+  width: 35px;
 }
 
 main a {

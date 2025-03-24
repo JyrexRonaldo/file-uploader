@@ -127,6 +127,25 @@ async function getFileDetails(req, res) {
   res.render("pages/file-details-page", { fileInfo });
 }
 
+async function getFolderDetails(req, res) {
+  const { folderId } = req.query;
+  const folderInfo = await prisma.folder.findUnique({
+    where: {
+      id: +folderId,
+    },
+    include: {
+      files: true,
+    },
+  });
+  const folderSize = folderInfo.files.reduce((total, file) => {
+    return total + file.size
+  }, 0)
+  console.log(folderSize);
+  folderInfo.folderSize = folderSize
+  console.log(folderInfo);
+  res.render("pages/folder-details-page", { folderInfo });
+}
+
 function downloadItem(req, res) {
   res.download("./uploads/1742632033957-936147402", "merc.jpg");
 }
@@ -140,4 +159,5 @@ module.exports = {
   getStorageItems,
   downloadItem,
   getFileDetails,
+  getFolderDetails,
 };
