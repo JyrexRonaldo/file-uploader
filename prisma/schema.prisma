@@ -32,11 +32,13 @@ model Folder {
   id             Int      @id @default(autoincrement())
   folderName     String   @unique
   parentFolderId Int?
+  parentFolder   Folder?  @relation("parentFolder", fields: [parentFolderId], references: [id], onDelete: Cascade)
   createdAt      DateTime @default(now())
   type           Type     @default(FOLDER)
   files          File[]
   user           User     @relation(fields: [userId], references: [id])
   userId         Int
+  childFolder    Folder[] @relation("parentFolder")
 }
 
 model File {
@@ -46,7 +48,7 @@ model File {
   size         Int
   createdAt    DateTime @default(now())
   type         Type     @default(FILE)
-  folder       Folder?  @relation(fields: [folderId], references: [id])
+  folder       Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId     Int?
   user         User     @relation(fields: [userId], references: [id])
   userId       Int
