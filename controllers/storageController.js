@@ -44,10 +44,18 @@ async function addFile(req, res) {
 
 async function addFolder(req, res) {
   const { folderName, parentFolderId } = req.body;
+  const parentFolderName = await prisma.folder.findUnique({
+    where: {
+      id: +parentFolderId,
+    },
+    select: {
+      folderName: true
+    }
+  });
   await prisma.folder.create({
     data: { folderName, parentFolderId: +parentFolderId, userId: req.user.id },
   });
-  res.redirect("/storage");
+  res.redirect(`/storage?folderId=${parentFolderId}&folderName=${parentFolderName.folderName}`);
 }
 
 async function getItems(currentFolderId, userId) {
