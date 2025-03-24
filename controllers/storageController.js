@@ -69,8 +69,11 @@ async function addFolder(req, res) {
   await prisma.folder.create({
     data: { folderName, parentFolderId: +parentFolderId, userId: req.user.id },
   });
+  const containingFolderName = parentFolderName
+    ? parentFolderName.folderName
+    : "";
   res.redirect(
-    `/storage?folderId=${parentFolderId}&folderName=${parentFolderName.folderName}`
+    `/storage?folderId=${parentFolderId}&folderName=${containingFolderName}`
   );
 }
 
@@ -137,13 +140,37 @@ async function getFolderDetails(req, res) {
       files: true,
     },
   });
-  const folderSize = folderInfo.files.reduce((total, file) => {
-    return total + file.size
-  }, 0)
-  console.log(folderSize);
-  folderInfo.folderSize = folderSize
-  console.log(folderInfo);
+
+  if (folderInfo) {
+    const folderSize = folderInfo.files.reduce((total, file) => {
+      return total + file.size;
+    }, 0);
+    folderInfo.folderSize = folderSize;  
+  }
   res.render("pages/folder-details-page", { folderInfo });
+}
+
+async function deleteFolder(req, res) {
+  const { folderId, parentFolderId } = req.query;
+  await prisma.folder.delete({
+    where: {
+      id: +folderId,
+    },
+  });
+  const parentFolderName = await prisma.folder.findUnique({
+    where: {
+      id: +parentFolderId,
+    },
+    select: {
+      folderName: true,
+    },
+  });
+  const containingFolderName = parentFolderName
+    ? parentFolderName.folderName
+    : "";
+  res.redirect(
+    `/storage?folderId=${parentFolderId}&folderName=${containingFolderName}`
+  );
 }
 
 function downloadItem(req, res) {
@@ -160,4 +187,5 @@ module.exports = {
   downloadItem,
   getFileDetails,
   getFolderDetails,
+  deleteFolder,
 };

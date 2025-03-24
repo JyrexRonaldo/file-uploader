@@ -5,3 +5,5 @@
 <p>Name: <%= folderInfo.folderName %></p>
 <p>Size:  <%= folderInfo.folderSize %> bytes </p>
 <p>Created:  <%= folderInfo.createdAt %> </p>
+
+<a href="/storage/folder/delete?folderId=<%= folderInfo.id %>&parentFolderId=<%= folderInfo.parentFolderId %>">Delete</a>
