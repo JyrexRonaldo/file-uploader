@@ -29,6 +29,14 @@ function getFolderForm(req, res) {
 
 async function addFile(req, res) {
   const { folderId } = req.body;
+  const parentFolderName = await prisma.folder.findUnique({
+    where: {
+      id: +folderId,
+    },
+    select: {
+      folderName: true
+    }
+  });
   if (req.file) {
     await prisma.file.create({
       data: {
@@ -39,7 +47,7 @@ async function addFile(req, res) {
       },
     });
   }
-  res.redirect("/storage");
+  res.redirect(`/storage?folderId=${folderId}&folderName=${parentFolderName.folderName}`);
 }
 
 async function addFolder(req, res) {
