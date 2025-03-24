@@ -17,4 +17,8 @@ storageRouter
   .get(storageController.getFileForm)
   .post(storageController.multerUpload, storageController.addFile);
 
+  storageRouter.route("/folder/details")
+
+  storageRouter.route("/file/details").get(storageController.getFileDetails)
+
 module.exports = storageRouter;

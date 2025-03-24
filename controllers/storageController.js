@@ -34,8 +34,8 @@ async function addFile(req, res) {
       id: +folderId,
     },
     select: {
-      folderName: true
-    }
+      folderName: true,
+    },
   });
   if (req.file) {
     await prisma.file.create({
@@ -44,10 +44,16 @@ async function addFile(req, res) {
         originalName: req.file.originalname,
         folderId: +folderId || null,
         userId: req.user.id,
+        size: req.file.size,
       },
     });
   }
-  res.redirect(`/storage?folderId=${folderId}&folderName=${parentFolderName.folderName}`);
+  const containingFolderName = parentFolderName
+    ? parentFolderName.folderName
+    : "";
+  res.redirect(
+    `/storage?folderId=${folderId}&folderName=${containingFolderName}`
+  );
 }
 
 async function addFolder(req, res) {
@@ -57,13 +63,15 @@ async function addFolder(req, res) {
       id: +parentFolderId,
     },
     select: {
-      folderName: true
-    }
+      folderName: true,
+    },
   });
   await prisma.folder.create({
     data: { folderName, parentFolderId: +parentFolderId, userId: req.user.id },
   });
-  res.redirect(`/storage?folderId=${parentFolderId}&folderName=${parentFolderName.folderName}`);
+  res.redirect(
+    `/storage?folderId=${parentFolderId}&folderName=${parentFolderName.folderName}`
+  );
 }
 
 async function getItems(currentFolderId, userId) {
@@ -109,6 +117,16 @@ async function getStorageItems(req, res) {
   res.render("pages/home-page", { items, currentFolderName, folderId });
 }
 
+async function getFileDetails(req, res) {
+  const { fileId } = req.query;
+  const fileInfo = await prisma.file.findUnique({
+    where: {
+      id: +fileId,
+    },
+  });
+  res.render("pages/file-details-page", { fileInfo });
+}
+
 function downloadItem(req, res) {
   res.download("./uploads/1742632033957-936147402", "merc.jpg");
 }
@@ -121,4 +139,5 @@ module.exports = {
   getFolderForm,
   getStorageItems,
   downloadItem,
+  getFileDetails,
 };
