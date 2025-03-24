@@ -43,6 +43,7 @@ model File {
   id           Int      @id @default(autoincrement())
   fileName     String   @unique
   originalName String
+  size         Int
   createdAt    DateTime @default(now())
   type         Type     @default(FILE)
   folder       Folder?  @relation(fields: [folderId], references: [id])
