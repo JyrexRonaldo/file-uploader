@@ -5,6 +5,7 @@
       <a href="/storage/file?folderId=<%= folderId %>"><button type="button">Upload file</button></a>
     </div>
     <div>
+      <a href="/storage?folderId=<%= containingFolderId %>&folderName=<%= parentFolderName %>">Back</a>
       <% if (currentFolderName) {%>
       <p><%= currentFolderName %></p>
       <% } else { %>
@@ -15,9 +16,9 @@
 
       <% items.forEach((item) => { %>
       <% if (item.type === "FOLDER")  {%>
-      <%- include('../partials/folder-record', { item: item }); %>
+      <%- include('../partials/folder-record', { item }); %>
       <% } else { %>
-      <%- include('../partials/file-record', { item: item }); %>
+      <%- include('../partials/file-record', { item }); %>
       <% }  %>
       <% }); %>
 

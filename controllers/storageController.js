@@ -58,6 +58,7 @@ async function addFile(req, res) {
 
 async function addFolder(req, res) {
   const { folderName, parentFolderId } = req.body;
+  const containingFolderId = +parentFolderId || null;
   const parentFolderName = await prisma.folder.findUnique({
     where: {
       id: +parentFolderId,
@@ -67,7 +68,11 @@ async function addFolder(req, res) {
     },
   });
   await prisma.folder.create({
-    data: { folderName, parentFolderId: +parentFolderId, userId: req.user.id },
+    data: {
+      folderName,
+      parentFolderId: containingFolderId,
+      userId: req.user.id,
+    },
   });
   const containingFolderName = parentFolderName
     ? parentFolderName.folderName
@@ -102,7 +107,7 @@ async function getItems(currentFolderId, userId) {
     });
     folders = await prisma.folder.findMany({
       where: {
-        parentFolderId: 0,
+        parentFolderId: null,
         userId,
       },
     });
@@ -116,8 +121,26 @@ async function getItems(currentFolderId, userId) {
 async function getStorageItems(req, res) {
   const folderId = req.query.folderId || null;
   const currentFolderName = req.query.folderName || null;
+  let parentFolderName = null
+  let containingFolderId = null
   const items = await getItems(+folderId, req.user.id);
-  res.render("pages/home-page", { items, currentFolderName, folderId });
+  const  parentFolderId  = await prisma.folder.findUnique({
+    where: {
+      id: Number(folderId),
+    },
+    select: {
+      parentFolderId: true,
+      folderName: true,
+    },
+  });
+  if (parentFolderId) {
+    const  folderName  = await prisma.folder.findUnique({where: {
+      id: +parentFolderId.parentFolderId
+    }})
+    parentFolderName = folderName
+    containingFolderId = parentFolderId.parentFolderId
+  }
+  res.render("pages/home-page", { items, currentFolderName, folderId, containingFolderId, parentFolderName });
 }
 
 async function getFileDetails(req, res) {
@@ -145,7 +168,7 @@ async function getFolderDetails(req, res) {
     const folderSize = folderInfo.files.reduce((total, file) => {
       return total + file.size;
     }, 0);
-    folderInfo.folderSize = folderSize;  
+    folderInfo.folderSize = folderSize;
   }
   res.render("pages/folder-details-page", { folderInfo });
 }
