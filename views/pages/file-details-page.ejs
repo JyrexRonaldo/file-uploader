@@ -6,4 +6,6 @@
 <p>Size:  <%= fileInfo.size %> bytes </p>
 <p>Created:  <%= fileInfo.createdAt %> </p>
 
+<a href="/storage/file/delete?fileId=<%= fileInfo.id %>&folderId=<%= fileInfo.folderId %>">Delete</a>
+<a href="/storage/file/edit?folderId=<%= fileInfo.id %>&parentFolderId=<%= fileInfo.folderId %>">Edit</a>
 <a href="/storage/file/download?fileName=<%= fileInfo.fileName %>&originalName=<%= fileInfo.originalName %>">Download</a>
