@@ -204,10 +204,6 @@ async function deleteFolder(req, res) {
   );
 }
 
-function downloadItem(req, res) {
-  res.download("./uploads/1742632033957-936147402", "merc.jpg");
-}
-
 async function getFolderEditForm(req, res) {
   const { folderId } = req.query;
   const folderInfo = await prisma.folder.findUnique({
@@ -223,8 +219,6 @@ async function getFolderEditForm(req, res) {
 
 async function editFolder(req, res) {
   const { folderName, parentFolderId, currentFolderId } = req.body;
-  const containingFolderId = +parentFolderId || null;
-  console.log(req.body)
   const parentFolderName = await prisma.folder.findUnique({
     where: {
       id: +parentFolderId,
@@ -247,6 +241,11 @@ async function editFolder(req, res) {
   res.redirect(
     `/storage?folderId=${parentFolderId}&folderName=${containingFolderName}`
   );
+}
+
+function downloadItem(req, res) {
+  const {fileName, originalName} = req.query
+  res.download(`./uploads/${fileName}`, `${originalName}`);
 }
 
 module.exports = {

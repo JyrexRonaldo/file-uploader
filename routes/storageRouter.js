@@ -23,6 +23,8 @@ storageRouter.route("/folder/details").get(storageController.getFolderDetails);
 
 storageRouter.route("/file/details").get(storageController.getFileDetails);
 
+storageRouter.route("/file/download").get(storageController.downloadItem)
+
 storageRouter.route("/folder/delete").get(storageController.deleteFolder);
 
 storageRouter.route("/folder/edit").get(storageController.getFolderEditForm).post(storageController.editFolder)

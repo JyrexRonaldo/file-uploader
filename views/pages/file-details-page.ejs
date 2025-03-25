@@ -6,3 +6,4 @@
 <p>Size:  <%= fileInfo.size %> bytes </p>
 <p>Created:  <%= fileInfo.createdAt %> </p>
 
+<a href="/storage/file/download?fileName=<%= fileInfo.fileName %>&originalName=<%= fileInfo.originalName %>">Download</a>
