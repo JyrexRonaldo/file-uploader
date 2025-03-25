@@ -121,10 +121,10 @@ async function getItems(currentFolderId, userId) {
 async function getStorageItems(req, res) {
   const folderId = req.query.folderId || null;
   const currentFolderName = req.query.folderName || null;
-  let parentFolderName = null
-  let containingFolderId = null
+  let parentFolderName = null;
+  let containingFolderId = null;
   const items = await getItems(+folderId, req.user.id);
-  const  parentFolderId  = await prisma.folder.findUnique({
+  const parentFolderId = await prisma.folder.findUnique({
     where: {
       id: Number(folderId),
     },
@@ -134,13 +134,21 @@ async function getStorageItems(req, res) {
     },
   });
   if (parentFolderId) {
-    const  folderName  = await prisma.folder.findUnique({where: {
-      id: +parentFolderId.parentFolderId
-    }})
-    parentFolderName = folderName
-    containingFolderId = parentFolderId.parentFolderId
+    const folderName = await prisma.folder.findUnique({
+      where: {
+        id: +parentFolderId.parentFolderId,
+      },
+    });
+    parentFolderName = folderName;
+    containingFolderId = parentFolderId.parentFolderId;
   }
-  res.render("pages/home-page", { items, currentFolderName, folderId, containingFolderId, parentFolderName });
+  res.render("pages/home-page", {
+    items,
+    currentFolderName,
+    folderId,
+    containingFolderId,
+    parentFolderName,
+  });
 }
 
 async function getFileDetails(req, res) {
@@ -200,6 +208,47 @@ function downloadItem(req, res) {
   res.download("./uploads/1742632033957-936147402", "merc.jpg");
 }
 
+async function getFolderEditForm(req, res) {
+  const { folderId } = req.query;
+  const folderInfo = await prisma.folder.findUnique({
+    where: {
+      id: +folderId,
+    },
+    include: {
+      files: true,
+    },
+  });
+  res.render("forms/edit-folder-form", { folderInfo });
+}
+
+async function editFolder(req, res) {
+  const { folderName, parentFolderId, currentFolderId } = req.body;
+  const containingFolderId = +parentFolderId || null;
+  console.log(req.body)
+  const parentFolderName = await prisma.folder.findUnique({
+    where: {
+      id: +parentFolderId,
+    },
+    select: {
+      folderName: true,
+    },
+  });
+  await prisma.folder.update({
+    where: {
+      id: +currentFolderId,
+    },
+    data: {
+      folderName,
+    },
+  });
+  const containingFolderName = parentFolderName
+    ? parentFolderName.folderName
+    : "";
+  res.redirect(
+    `/storage?folderId=${parentFolderId}&folderName=${containingFolderName}`
+  );
+}
+
 module.exports = {
   multerUpload,
   addFile,
@@ -211,4 +260,6 @@ module.exports = {
   getFileDetails,
   getFolderDetails,
   deleteFolder,
+  getFolderEditForm,
+  editFolder,
 };

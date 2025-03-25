@@ -1,0 +1,12 @@
+<%- include('../partials/header.ejs'); %>
+  <h3>Edit folder</h3>
+  <form action="/storage/folder/edit" method="post">
+    <div class="form-group">
+      <input type="text" name="folderName" value="<%= folderInfo.folderName %>">
+      <input type="hidden" name="parentFolderId" value="<%= folderInfo.parentFolderId %>">
+      <input type="hidden" name="currentFolderId" value="<%= folderInfo.id %>">
+      <button type="submit">Edit Folder</button>
+    </div>
+  </form>
+</body>
+</html>
