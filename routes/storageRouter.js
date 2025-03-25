@@ -31,4 +31,7 @@ storageRouter.route("/file/delete").get(storageController.deleteFile)
 
 storageRouter.route("/folder/edit").get(storageController.getFolderEditForm).post(storageController.editFolder)
 
+storageRouter.route("/file/edit").get(storageController.getFileEditForm)
+.post(storageController.editFile)
+
 module.exports = storageRouter;

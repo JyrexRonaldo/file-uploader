@@ -220,7 +220,9 @@ async function deleteFile(req, res) {
     },
   });
   const containingFolderName = folderName ? folderName.folderName : "";
-  res.redirect(`/storage?folderId=${folderId}&folderName=${containingFolderName}`)
+  res.redirect(
+    `/storage?folderId=${folderId}&folderName=${containingFolderName}`
+  );
 }
 
 async function getFolderEditForm(req, res) {
@@ -234,6 +236,16 @@ async function getFolderEditForm(req, res) {
     },
   });
   res.render("forms/edit-folder-form", { folderInfo });
+}
+
+async function getFileEditForm(req, res) {
+  const { fileId } = req.query;
+  const fileInfo = await prisma.file.findUnique({
+    where: {
+      id: +fileId,
+    },
+  });
+  res.render("forms/edit-file-form", { fileInfo });
 }
 
 async function editFolder(req, res) {
@@ -262,6 +274,31 @@ async function editFolder(req, res) {
   );
 }
 
+async function editFile(req, res) {
+  const { originalName, folderId, currentFileId } = req.body;
+  const folderName = await prisma.folder.findUnique({
+    where: {
+      id: +folderId,
+    },
+    select: {
+      folderName: true,
+    },
+  });
+  await prisma.file.update({
+    where: {
+      id: +currentFileId,
+    },
+    data: {
+      originalName,
+    },
+  });
+
+  const containingFolderName = folderName ? folderName.folderName : "";
+  res.redirect(
+    `/storage?folderId=${folderId}&folderName=${containingFolderName}`
+  )
+}
+
 function downloadItem(req, res) {
   const { fileName, originalName } = req.query;
   res.download(`./uploads/${fileName}`, `${originalName}`);
@@ -280,5 +317,7 @@ module.exports = {
   deleteFolder,
   getFolderEditForm,
   editFolder,
-  deleteFile
+  deleteFile,
+  getFileEditForm,
+  editFile,
 };
