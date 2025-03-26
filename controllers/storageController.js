@@ -1,15 +1,9 @@
 const prisma = require("../config/prisma");
 const multer = require("multer");
+const supabase = require("../config/superbase")
+const {decode} = require("base64-arraybuffer")
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix);
-  },
-});
+const storage = multer.memoryStorage();
 
 // const upload = multer({ dest: "./uploads" });
 
@@ -40,13 +34,22 @@ async function addFile(req, res) {
   if (req.file) {
     await prisma.file.create({
       data: {
-        fileName: req.file.filename,
+        fileName: req.file.originalname,
         originalName: req.file.originalname,
         folderId: +folderId || null,
         userId: req.user.id,
         size: req.file.size,
       },
     });
+
+    const file = req.file
+    
+    const fileBase64 = decode(file.buffer.toString("base64"))
+
+     // upload the file to supabase
+     const { data, error } = await supabase.storage
+     .from("file-uploader-odin")
+     .upload(file.originalname, fileBase64);
   }
   const containingFolderName = parentFolderName
     ? parentFolderName.folderName

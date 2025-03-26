@@ -10,7 +10,7 @@ indexRouter
   .post(indexController.authenticateUser);
 
 indexRouter
-  .route("/sign-up")
+  .route("/")
   .get(indexController.getSignUpPage)
   .post(indexController.addNewUser, indexController.authenticateUser);
 
